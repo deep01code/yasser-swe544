@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.5'
-    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.springframework.boot' version '2.7.15' // Latest Spring Boot 2.7.x version
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
 group = 'org.ksu'
@@ -9,7 +9,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(8) // Use Java 8
     }
 }
 
@@ -18,9 +18,16 @@ repositories {
 }
 
 dependencies {
+    // Spring Boot dependencies
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.apache.kafka:kafka-clients:3.6.0'
+
+    // Explicit JUnit version for testing
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    implementation 'org.apache.zookeeper:zookeeper:3.6.3'
+
+
 }
 
 tasks.named('test') {

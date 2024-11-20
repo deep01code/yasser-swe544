@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  door1:
+    image: swe544app
+    deploy:
+      replicas: 3
+    ports:
+      - "8080" # Container port (no specific host port)
+    labels:
+      - "custom_name=door1_INSTANCE_{{.Task.Slot}}" # Dynamic container name
+    environment:
+      DOOR_CLUSTER_NUMBER: "door1"
+      NEXT_DOOR_CLUSTER_NUMBER: "door2"
+      ADDRESS: "host.docker.internal"
+    hostname: "door1-{{.Task.Slot}}" # Set hostname dynamically for each replica
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh # Mount the entry script into the container
+    command: sh /entrypoint.sh
+
+  door2:
+    image: swe544app
+    deploy:
+      replicas: 3
+    ports:
+      - "8080" # Container port (no specific host port)
+    labels:
+      - "custom_name=door2_INSTANCE_{{.Task.Slot}}" # Dynamic container name
+    environment:
+      DOOR_CLUSTER_NUMBER: "door2"
+      NEXT_DOOR_CLUSTER_NUMBER: "door3"
+      ADDRESS: "host.docker.internal"
+    hostname: "door2-{{.Task.Slot}}" # Set hostname dynamically for each replica
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh # Mount the entry script into the container
+    command: sh /entrypoint.sh
+
+  door3:
+    image: swe544app
+    deploy:
+      replicas: 3
+    ports:
+      - "8080" # Container port (no specific host port)
+    labels:
+      - "custom_name=door3_INSTANCE_{{.Task.Slot}}" # Dynamic container name
+    environment:
+      DOOR_CLUSTER_NUMBER: "door3"
+      NEXT_DOOR_CLUSTER_NUMBER: "door4"
+      ADDRESS: "host.docker.internal"
+    hostname: "door3-{{.Task.Slot}}" # Set hostname dynamically for each replica
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh # Mount the entry script into the container
+    command: sh /entrypoint.sh
+
+  door4:
+    image: swe544app
+    deploy:
+      replicas: 3
+    ports:
+      - "8080" # Container port (no specific host port)
+    labels:
+      - "custom_name=door4_INSTANCE_{{.Task.Slot}}" # Dynamic container name
+    environment:
+      DOOR_CLUSTER_NUMBER: "door4"
+      NEXT_DOOR_CLUSTER_NUMBER: "door1"
+      ADDRESS: "host.docker.internal"
+    hostname: "door4-{{.Task.Slot}}" # Set hostname dynamically for each replica
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh # Mount the entry script into the container
+    command: sh /entrypoint.sh

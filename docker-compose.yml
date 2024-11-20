@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  door1:
+    image: swe544app
+    deploy:
+      replicas: 1
+      labels:
+        - "custom_name=door1_INSTANCE_{{.Task.Slot}}" # Dynamic container name
+    environment:
+      BOOTSTRAP_SERVERS: "localhost:9092"
+      DOOR_CLUSTER_NUMBER: "door1"
+      DOOR_CLUSTER_CARS_COUNTER_PATH: "INSTANCE_{{.Task.Slot}}_CAR_COUNTER"
+      INSTANCE_NUMBER: "INSTANCE_{{.Task.Slot}}"
+      NEXT_DOOR_CLUSTER_NUMBER: "door2"
+      ADDRESS: "host.docker.internal"
+    hostname: "door1-{{.Task.Slot}}" # Set hostname dynamically for each replica
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh # Mount the entry script into the container
+    command: sh /entrypoint.sh
+    ports:
+      - "8080" # Let Docker assign a random host port mapped to container port 8080
+
+
