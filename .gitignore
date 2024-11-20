@@ -41,3 +41,5 @@ out/
 ./door2-instance1.log
 ./door3-instance1.log
 ./door4-instance1.log
+
+door*-instance*.log
