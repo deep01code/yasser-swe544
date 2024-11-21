@@ -5,6 +5,9 @@ package org.ksu.swe544;
 import org.apache.zookeeper.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -163,7 +166,14 @@ public class Swe544Application {
     }
 
     public static void notifyCarDeparture(){
-        sendEvent(System.getProperty(LookupValues.NEXT_DOOR_CLUSTER_NUMBER),"car-departure-"+System.getProperty(LookupValues.DOOR_CLUSTER_NUMBER),"car-departure-"+System.getProperty(LookupValues.DOOR_CLUSTER_NUMBER));
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String timestamp = now.format(formatter);
+        String key="car-departure"
+                +"-"+System.getProperty(LookupValues.DOOR_CLUSTER_NUMBER)
+                +"-INSTANCE_NUMBER"+System.getProperty(LookupValues.INSTANCE_NUMBER)+" at:"+ timestamp;
+
+        sendEvent(System.getProperty(LookupValues.NEXT_DOOR_CLUSTER_NUMBER),key,key);
     }
 
     public static void notifyCarArrival(){
