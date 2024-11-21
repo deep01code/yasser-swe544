@@ -1,7 +1,7 @@
 package org.ksu.swe544;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+//import org.springframework.boot.SpringApplication;
+//import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.zookeeper.*;
 
 import java.io.IOException;
@@ -57,7 +57,7 @@ docker run --network=host -e DOOR_CLUSTER_NUMBER="door1" -e INSTANCE_NUMBER="ins
 
 * */
 
-@SpringBootApplication
+//@SpringBootApplication
 public class Swe544Application {
 
 
@@ -66,7 +66,7 @@ public class Swe544Application {
 
         System.out.println("running");
 
-        SpringApplication.run(Swe544Application.class, args);
+        //SpringApplication.run(Swe544Application.class, args);
 
 
 
