@@ -7,7 +7,6 @@ import org.apache.zookeeper.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -15,11 +14,17 @@ import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.ksu.swe544.services.CarCounterService;
+import org.ksu.swe544.unused.ZookeeperUtility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Properties;
 
-import static org.ksu.swe544.kafkaUtility.consumeEvent;
-import static org.ksu.swe544.kafkaUtility.sendEvent;
+import static org.ksu.swe544.unused.kafkaUtility.consumeEvent;
+import static org.ksu.swe544.unused.kafkaUtility.sendEvent;
 
 /*
 -DADDRESS=localhost -DBOOTSTRAP_SERVERS=localhost:9092 -DDOOR_CLUSTER_CARS_COUNTER_PATH=door1counter -DDOOR_CLUSTER_NUMBER=door1 -DINSTANCE_NUMBER=1 -DNEXT_DOOR_CLUSTER_NUMBER=door2
@@ -60,8 +65,10 @@ docker run --network=host -e DOOR_CLUSTER_NUMBER="door1" -e INSTANCE_NUMBER="ins
 
 * */
 
-//@SpringBootApplication
-public class Swe544Application {
+@SpringBootApplication
+public class Swe544Application  {
+
+
 
 
     static ZookeeperUtility masterNode;
@@ -69,23 +76,19 @@ public class Swe544Application {
 
         System.out.println("running");
 
-        //SpringApplication.run(Swe544Application.class, args);
+        SpringApplication.run(Swe544Application.class, args);
 
 
 
-       // Swe544Application.ConnectZooKeeper();
-         masterNode = new ZookeeperUtility();
-         masterNode.attemptToBeMaster();
-         masterNode.attemptToCreateCounter();
-
-         Thread.sleep(3000);
          runCarScheduler();
 
-        //testKafka();
+
     }
 
 
     public static void runCarScheduler(){
+        CarCounterService carCounterService = SpringContextHolder.getContext().getBean(CarCounterService.class);
+
         final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
@@ -93,28 +96,21 @@ public class Swe544Application {
                 try{
 
                     System.out.println("Enter Scadualer***************************************************************************");
-                    System.out.println("Enter Scadualer***************************************************************************");
-                    System.out.println("Enter Scadualer***************************************************************************");
 
 
-                    if(masterNode.isMaster()){
-
-                        Random random = new Random();
-
-                        // Generate a random number (0 or 1)
-//                        int decision = random.nextInt(2); // Generates either 0 or 1
 
 
-                        if (new Random().nextInt(2) == 0) {// Branch 1: 50% chance
-                            //MAX_CAR_COUNTER
-                            System.out.println("notifyCarDeparture executed.");
-                            notifyCarDeparture();
 
-                        } else {// Branch 2: 50% chance
-                            System.out.println("notifyCarArrival executed.");
-                            notifyCarArrival();
-                        }
+                    if (new Random().nextInt(2) == 0) {// Branch 1: 50% chance
+                        //MAX_CAR_COUNTER
+                        System.out.println("notifyCarDeparture executed.");
+                        carCounterService.notifyCarDeparture();
+
+                    } else {// Branch 2: 50% chance
+                        System.out.println("notifyCarArrival executed.");
+                        carCounterService.notifyCarArrival();
                     }
+
 
 
 
@@ -123,10 +119,10 @@ public class Swe544Application {
                 }
 
                 try {
-                    Thread.sleep(new Random().nextInt(3)*1000);
-                    System.out.println("Sleep***************************************************************************");
-                    System.out.println("Sleep***************************************************************************");
-                    System.out.println("Sleep***************************************************************************");
+                    int random=new Random().nextInt(3)*1000;
+                    System.out.println("Sleep for "+random);
+                    Thread.sleep(random);
+
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -165,7 +161,7 @@ public class Swe544Application {
         }
     }
 
-    public static void notifyCarDeparture(){
+ /*   public static void notifyCarDeparture(){
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String timestamp = now.format(formatter);
@@ -178,5 +174,5 @@ public class Swe544Application {
 
     public static void notifyCarArrival(){
         consumeEvent(System.getProperty(LookupValues.DOOR_CLUSTER_NUMBER));
-    }
+    }*/
 }

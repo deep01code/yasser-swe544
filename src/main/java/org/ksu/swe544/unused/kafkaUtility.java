@@ -1,4 +1,4 @@
-package org.ksu.swe544;
+package org.ksu.swe544.unused;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -9,13 +9,13 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.zookeeper.KeeperException;
+import org.ksu.swe544.LookupValues;
 
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
-import static org.ksu.swe544.ZookeeperUtility.getValueFromZooPath;
+import static org.ksu.swe544.unused.ZookeeperUtility.getValueFromZooPath;
 
 public class kafkaUtility {
 
