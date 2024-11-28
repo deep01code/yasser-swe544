@@ -1,9 +1,12 @@
 package org.ksu.swe544.controller;
 
+import org.ksu.swe544.unused.KafkaUtility;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @RestController
@@ -43,15 +46,39 @@ public class NodeController {
     @PostMapping("/notifyCarDepartureMessage")
     public String notifyCarDepartureMessage(@RequestBody Map<String, String> requestBody) {
         String message = requestBody.get("message");
-        System.out.println(currentNodeName+": notifyCarDepartureMessage from "+nextNodeName+": "+message);
-        return currentNodeName+": notifyCarDepartureMessage from "+nextNodeName+": "+message;
+
+        System.out.println(currentNodeName+": notifyCarDepartureMessage from : "+message);
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String timestamp = now.format(formatter);
+
+        String messageContent=timestamp+" "+currentNodeName+": notifyCarDepartureMessage from : "+message;
+
+        KafkaUtility kafkaUtility = new KafkaUtility();
+        kafkaUtility.sendEvent(currentNodeName+"_NOTIFICATION", messageContent,messageContent);
+
+        return currentNodeName+": notifyCarDepartureMessage from : "+message;
     }
 
     @PostMapping("/notifyCarArrivalMessage")
-    public String notifyCarDepartureNotification(@RequestBody Map<String, String> requestBody) {
+    public String notifyCarArrivalNotification(@RequestBody Map<String, String> requestBody) {
         String message = requestBody.get("message");
-        System.out.println(currentNodeName+": notifyCarDepartureNotification from "+nextNodeName+": "+message);
-        return currentNodeName+": notifyCarDepartureNotification from "+nextNodeName+": "+message;
+
+
+        System.out.println(currentNodeName+": notifyCarArrivalNotification from  : "+message);
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String timestamp = now.format(formatter);
+
+        String messageContent=timestamp+" "+currentNodeName+": notifyCarArrivalNotification from  : "+message;
+
+        KafkaUtility kafkaUtility = new KafkaUtility();
+        kafkaUtility.sendEvent(currentNodeName+"_NOTIFICATION", messageContent,messageContent);
+
+
+        return currentNodeName+": notifyCarCarArrivalNotification from : "+message;
     }
 
 

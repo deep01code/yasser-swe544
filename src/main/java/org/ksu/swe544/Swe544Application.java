@@ -93,7 +93,14 @@ public class Swe544Application  {
                     System.out.println("Enter Scadualer***************************************************************************");
 
 
+                    try {
+                        int random=new Random().nextInt(3)*2000;
+                        System.out.println("Sleep for "+random);
+                        Thread.sleep(random);
 
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
 
 
                     if (new Random().nextInt(2) == 0) {// Branch 1: 50% chance
@@ -113,16 +120,9 @@ public class Swe544Application  {
                              e.printStackTrace();
                 }
 
-                try {
-                    int random=new Random().nextInt(3)*1000;
-                    System.out.println("Sleep for "+random);
-                    Thread.sleep(random);
 
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
             }
-        }, 0, 2, TimeUnit.SECONDS);
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
 
