@@ -2,6 +2,7 @@ package org.ksu.swe544.services;
 
 import org.ksu.swe544.entities.CarCounter;
 import org.ksu.swe544.entities.CarCounterRepository;
+import org.ksu.swe544.unused.KafkaUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -15,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,12 +56,18 @@ public class CarCounterService {
 
     @Transactional
     public synchronized void notifyCarDeparture(){
-        //decrementCounter in DB.
+        //1-decrementCounter in DB.
         self.decrementCounter();
 
         //based on successful db transaction
 
         //2- send kafka to DOOR1_CROSS_OUT
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String timestamp = now.format(formatter);
+        String message=timestamp+": Car Departure from : "+currentNodeName;
+        KafkaUtility kafkaUtility = new KafkaUtility();
+        kafkaUtility.sendEvent(currentNodeName+"_CROSS_OUT", message,message);
 
         //3- notify nextdoor
         TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
@@ -74,6 +83,17 @@ public class CarCounterService {
     @Transactional
     public synchronized void notifyCarArrival(){
         self.incrementCounter();
+
+
+        //2- send kafka to DOOR1_CROSS_OUT
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String timestamp = now.format(formatter);
+        String message=timestamp+": Car Arrival from : "+currentNodeName;
+        KafkaUtility kafkaUtility = new KafkaUtility();
+        kafkaUtility.sendEvent(currentNodeName+"_CROSS_IN", message,message);
+
+
         TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
             @Override
             public void afterCommit() {

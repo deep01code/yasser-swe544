@@ -1,9 +1,8 @@
 package org.ksu.swe544.entities;
 
 
-import org.ksu.swe544.unused.kafkaUtility;
+import org.ksu.swe544.unused.KafkaUtility;
 
-import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,6 +18,7 @@ public class CarCounterActionListener {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String timestamp = now.format(formatter);
         String message=timestamp+" Car Count is : "+reference.getCarCount();
-        kafkaUtility.sendEvent("cars_counter", message,message);
+        KafkaUtility kafkaUtility = new KafkaUtility();
+        kafkaUtility.sendEvent("CARS_COUNTER", message,message);
      }
  }

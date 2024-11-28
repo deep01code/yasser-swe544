@@ -5,8 +5,6 @@ package org.ksu.swe544;
 import org.apache.zookeeper.*;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,15 +14,12 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.ksu.swe544.services.CarCounterService;
 import org.ksu.swe544.unused.ZookeeperUtility;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 
 import java.util.Properties;
 
-import static org.ksu.swe544.unused.kafkaUtility.consumeEvent;
-import static org.ksu.swe544.unused.kafkaUtility.sendEvent;
+
 
 /*
 -DADDRESS=localhost -DBOOTSTRAP_SERVERS=localhost:9092 -DDOOR_CLUSTER_CARS_COUNTER_PATH=door1counter -DDOOR_CLUSTER_NUMBER=door1 -DINSTANCE_NUMBER=1 -DNEXT_DOOR_CLUSTER_NUMBER=door2
