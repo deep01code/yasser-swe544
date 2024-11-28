@@ -7,7 +7,7 @@ import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "singleton_value")
-
+@EntityListeners(CarCounterActionListener.class)
 public class CarCounter {
 
     @Id

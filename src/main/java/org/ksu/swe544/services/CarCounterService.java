@@ -47,34 +47,20 @@ public class CarCounterService {
     private String currentNodeURL;
 
 
-    @Transactional
-    public synchronized void incrementCounter() {
-        CarCounter carCounter = entityManager.find(CarCounter.class, 1L, LockModeType.PESSIMISTIC_WRITE);
-        if (carCounter.getCarCount() < 100) { // Ensure value doesn't go below 0
-            carCounter.setCarCount(carCounter.getCarCount() + 1);
-            entityManager.persist(carCounter);
-        } else {
-            System.out.println("Car count is already at 100. Cannot increment further.");
-        }
-    }
 
-    @Transactional
-    public synchronized void decrementCounter() {
-        CarCounter carCounter = entityManager.find(CarCounter.class, 1L, LockModeType.PESSIMISTIC_WRITE);
-        if (carCounter.getCarCount() > 0) { // Ensure value doesn't go below 0
-            carCounter.setCarCount(carCounter.getCarCount() - 1);
-            entityManager.persist(carCounter);
-        } else {
-            System.out.println("Car count is already at 0. Cannot decrement further.");
-        }
-    }
 
 
 
     @Transactional
     public synchronized void notifyCarDeparture(){
+        //decrementCounter in DB.
         self.decrementCounter();
 
+        //based on successful db transaction
+
+        //2- send kafka to DOOR1_CROSS_OUT
+
+        //3- notify nextdoor
         TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
             @Override
             public void afterCommit() {
@@ -160,6 +146,29 @@ public class CarCounterService {
         }
     }
 
+
+
+    @Transactional
+    public synchronized void incrementCounter() {
+        CarCounter carCounter = entityManager.find(CarCounter.class, 1L, LockModeType.PESSIMISTIC_WRITE);
+        if (carCounter.getCarCount() < 100) { // Ensure value doesn't go below 0
+            carCounter.setCarCount(carCounter.getCarCount() + 1);
+            entityManager.persist(carCounter);
+        } else {
+            System.out.println("Car count is already at 100. Cannot increment further.");
+        }
+    }
+
+    @Transactional
+    public synchronized void decrementCounter() {
+        CarCounter carCounter = entityManager.find(CarCounter.class, 1L, LockModeType.PESSIMISTIC_WRITE);
+        if (carCounter.getCarCount() > 0) { // Ensure value doesn't go below 0
+            carCounter.setCarCount(carCounter.getCarCount() - 1);
+            entityManager.persist(carCounter);
+        } else {
+            System.out.println("Car count is already at 0. Cannot decrement further.");
+        }
+    }
 }
 
 /*

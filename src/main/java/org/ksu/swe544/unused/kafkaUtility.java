@@ -48,23 +48,15 @@ public class kafkaUtility {
         KafkaProducer<String, String> producer = new KafkaProducer<>(getProducerProperties());
         try {
 
-            String carCounter=getValueFromZooPath("/"+System.getProperty(LookupValues.DOOR_CLUSTER_CARS_COUNTER_PATH));
-            int carCounterValue=Integer.parseInt(carCounter);
-            if(carCounterValue>0){
-                producer.send(new ProducerRecord<>(topic, key, value), (metadata, exception) -> {
-                    if (exception == null) {
-                        System.out.println("Sent***************************************************************************");
-                        System.out.println("Sent***************************************************************************");
+            producer.send(new ProducerRecord<>(topic, key, value), (metadata, exception) -> {
+                if (exception == null) {
 
-                        System.out.printf("Message sent to topic %s [partition: %d, offset: %d]%n",
-                                metadata.topic(), metadata.partition(), metadata.offset());
-                        ZookeeperUtility.decrementCarCounter();
-                        System.out.println("-----");
-                    } else {
-                        System.err.println("Error sending message: " + exception.getMessage());
-                    }
-                });
-            }
+                    System.out.printf("Message sent to topic %s [partition: %d, offset: %d]%n",
+                            metadata.topic(), metadata.partition(), metadata.offset());
+                } else {
+                    System.err.println("Error sending message: " + exception.getMessage());
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();

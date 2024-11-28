@@ -127,7 +127,7 @@ public class Swe544Application  {
                     throw new RuntimeException(e);
                 }
             }
-        }, 0, 1, TimeUnit.SECONDS);
+        }, 0, 2, TimeUnit.SECONDS);
     }
 
 
